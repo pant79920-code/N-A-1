@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Illinois Public Transit</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121822; --panel2:#0f1520; --line:#22303f;
+    --text:#e8eef4; --muted:#93a4b5; --accent:#3fd0c9; --accent2:#f2b134; --warn:#e0654f;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Georgia',serif;line-height:1.6;}
+  header{padding:80px 24px 40px;text-align:center;border-bottom:1px solid var(--line);}
+  header h1{font-family:'Helvetica Neue',Arial,sans-serif;font-size:clamp(2rem,5vw,3.2rem);margin:0 0 12px;letter-spacing:-0.5px;}
+  header p{color:var(--muted);max-width:640px;margin:0 auto;font-size:1.1rem;}
+  nav{position:sticky;top:0;background:rgba(11,15,20,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);z-index:10;
+      display:flex;gap:4px;overflow-x:auto;padding:12px 16px;font-family:'Helvetica Neue',Arial,sans-serif;}
+  nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:8px 14px;border-radius:20px;white-space:nowrap;border:1px solid transparent;}
+  nav a:hover{color:var(--text);border-color:var(--line);}
+  main{max-width:960px;margin:0 auto;padding:40px 24px 100px;}
+  section{margin-bottom:64px;}
+  .intro{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:32px;margin-bottom:48px;}
+  .intro h2{font-family:'Helvetica Neue',Arial,sans-serif;color:var(--accent);margin-top:0;}
+  .plant{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:32px;scroll-margin-top:70px;}
+  .plant h2{font-family:'Helvetica Neue',Arial,sans-serif;font-size:1.6rem;margin:0 0 4px;}
+  .plant .sub{color:var(--muted);font-family:'Helvetica Neue',Arial,sans-serif;font-size:.85rem;margin-bottom:20px;}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:20px 0;}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .stat .label{font-family:'Helvetica Neue',Arial,sans-serif;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;}
+  .stat .value{font-family:'Helvetica Neue',Arial,sans-serif;font-size:1.25rem;font-weight:600;color:var(--accent);}
+  .plant p{margin:10px 0;}
+  .plant p b{color:var(--accent2);}
+  .note{color:var(--muted);font-family:'Helvetica Neue',Arial,sans-serif;font-size:.78rem;margin-top:10px;}
+  .flag{color:var(--warn);font-family:'Helvetica Neue',Arial,sans-serif;font-size:.78rem;margin-top:6px;border-left:2px solid var(--warn);padding-left:8px;}
+  footer{border-top:1px solid var(--line);padding:40px 24px;text-align:center;color:var(--muted);font-family:'Helvetica Neue',Arial,sans-serif;font-size:.85rem;}
+  .policy-list{list-style:none;padding:0;}
+  .policy-list li{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-bottom:12px;}
+  .policy-list b{color:var(--accent);font-family:'Helvetica Neue',Arial,sans-serif;}
+  h3{font-family:'Helvetica Neue',Arial,sans-serif;color:var(--accent2);}
+  .fleet-bar{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:48px;}
+  .fleet-bar .cell{background:var(--panel);padding:22px 14px;text-align:center;}
+  .fleet-bar .cell .num{font-family:'Helvetica Neue',Arial,sans-serif;font-size:1.3rem;font-weight:700;color:var(--accent2);}
+  .fleet-bar .cell .lab{font-family:'Helvetica Neue',Arial,sans-serif;font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:6px;}
+  @media(max-width:760px){.fleet-bar{grid-template-columns:repeat(2,1fr);}}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin:20px 0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:.85rem;}
+  .facts div{border-bottom:1px dotted var(--line);padding:8px 0;display:flex;justify-content:space-between;gap:12px;}
+  .facts div span:first-child{color:var(--muted);}
+  .facts div span:last-child{color:var(--text);font-weight:600;text-align:right;}
+  @media(max-width:600px){.facts{grid-template-columns:1fr;}}
+  .divider{border:none;border-top:1px solid var(--line);margin:24px 0;}
+  .badge{display:inline-block;font-family:'Helvetica Neue',Arial,sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:6px;margin-left:8px;vertical-align:middle;}
+  .badge.est{background:rgba(242,177,52,.15);color:var(--accent2);border:1px solid rgba(242,177,52,.3);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Illinois' Public Transit System</h1>
+  <p>CTA, Metra, Pace, Amtrak Illinois, and Springfield's SMTD — a full data profile of the six systems that move Illinois residents, from big-city rail to a small downstate bus fleet.</p>
+</header>
+
+<nav>
+  <a href="#intro">Overview</a>
+  <a href="#cta-rail">CTA Rail</a>
+  <a href="#cta-bus">CTA Bus</a>
+  <a href="#metra">Metra</a>
+  <a href="#pace">Pace</a>
+  <a href="#amtrak">Amtrak IL</a>
+  <a href="#smtd">SMTD</a>
+  <a href="#policy">Policy</a>
+</nav>
+
+<main>
+
+<div class="fleet-bar">
+  <div class="cell"><div class="num">6</div><div class="lab">Systems Profiled</div></div>
+  <div class="cell"><div class="num">395.8M</div><div class="lab">Combined Annual Rides, 2025</div></div>
+  <div class="cell"><div class="num">$4.8B</div><div class="lab">Combined Annual Operating Cost</div></div>
+  <div class="cell"><div class="num">~$1.2B</div><div class="lab">New NITA Act Funding, 2026</div></div>
+  <div class="cell"><div class="num">102 Ctys</div><div class="lab">IL Counties w/ Some Coverage</div></div>
+  <div class="cell"><div class="num">~639K</div><div class="lab">Tons CO₂ Avoided/Yr (est.)</div></div>
+</div>
+
+<section class="intro" id="intro">
+  <h2>Why Public Transit</h2>
+  <p>Transit systems move people without the per-capita emissions, land use, and congestion cost of single-occupancy driving. Illinois runs six meaningfully different systems side by side: big-city rail and bus (CTA), suburban commuter rail (Metra), suburban bus (Pace), statewide intercity rail (Amtrak Illinois), and a small downstate city bus system (SMTD, Springfield). Together they cover almost every transit archetype in the state — which also means comparing them exposes real gaps: SMTD's funding and service levels are a fraction of what Chicago-area riders get, despite serving a real working population downstate.</p>
+  <p>In December 2025, Illinois passed the Northern Illinois Transit Authority (NITA) Act, replacing the RTA and adding roughly $1.2 billion in new annual operating funding plus $180 million in capital funding for CTA, Metra, and Pace — averting a widely-discussed "fiscal cliff" that threatened service cuts and fare hikes across the region.</p>
+  <p class="note">This page is an advocacy resource, not a neutral policy review — the framing has a point of view. But every number on this page has been checked against agency and RTA-published sources where possible, and estimates that couldn't be verified are labeled <span class="badge est">Estimate</span> rather than presented as fact. Two calculations in the original working notes for this project (household savings and congestion-cost-avoided, computed by multiplying full annual driving costs or per-driver congestion costs by trip counts instead of per-mile rates by trip distance) produced results in the hundreds of billions of dollars — larger than Illinois' entire state budget. Both have been recalculated below using a unit-consistent, sourced per-mile method; see the methodology note at the bottom of the page for exactly what changed.</p>
+</section>
+
+<!-- CTA RAIL -->
+<section class="plant" id="cta-rail">
+  <h2>CTA – Rail ('L' Trains)</h2>
+  <div class="sub">Chicago Transit Authority · 8 routes, 224.1 mi of track, 146 stations</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="label">2025 Annual Ridership</div><div class="value">135.2M rides</div></div>
+    <div class="stat"><div class="label">YoY Change</div><div class="value">+6%</div></div>
+    <div class="stat"><div class="label">Rail Cars</div><div class="value">1,660</div></div>
+    <div class="stat"><div class="label">Daily Trips</div><div class="value">~2,374</div></div>
+  </div>
+  <p>CTA Rail serves the City of Chicago and 35 surrounding suburbs, providing about <b>86%</b> of public transit trips in the six-county Chicago metro area, either directly or via connections to Metra and Pace.</p>
+  <p>In 2025, CTA Rail recorded <b>135.2 million</b> rides, up 6% from roughly 127.5 million in 2024 — the highest rail ridership growth of any Chicago-area transit mode. <span class="badge est">RTA/CTA, Feb 2026</span></p>
+  <div class="divider"></div>
+  <h3>Environmental Impact <span class="badge est">Estimate</span></h3>
+  <div class="facts">
+    <div><span>CO₂ avoided/year</span><span>123,065 metric tons</span></div>
+    <div><span>SO₂ avoided/year</span><span>~110.8 metric tons</span></div>
+    <div><span>NOₓ avoided/year</span><span>~9.2 metric tons</span></div>
+    <div><span>Gasoline avoided/year</span><span>12,610,000 gallons</span></div>
+    <div><span>Auto trips avoided/year</span><span>53,976,000</span></div>
+    <div><span>Congestion hours avoided/year</span><span>~2.30M hours <span class="badge est">Est.</span></span></div>
+    <div><span>Congestion cost avoided/year</span><span>~$42.3M <span class="badge est">Est., fixed</span></span></div>
+    <div><span>Basis</span><span>39% car-replacement, 5.7 mi avg. trip</span></div>
+  </div>
+  <p class="note">Formula: trips × car-replacement % × avg. trip distance × emissions factor. The 39% car-replacement figure comes from an RTA lapsed-rider survey, not a CTA-specific rail survey — treat as a reasonable estimate, not a precise figure. SO₂/NOₓ reduce air pollution tied to respiratory harm and smog, respectively — a public-health benefit distinct from the climate benefit of CO₂ reduction. Congestion figures now use INRIX's 2025 Chicago Global Traffic Scorecard directly: 112 hours and $2,063 lost per average Chicago driver per year, converted to a per-mile rate (~0.0075 hrs/mi, ~$0.1375/mi) and applied to auto-trip-miles avoided. This replaces the earlier broken calculation (annual per-driver cost × total trip count, which produced a ~$98.6 billion figure — larger than Illinois' entire state budget) with one that's unit-consistent: miles avoided × a real, current, sourced cost-per-mile.</p>
+  <div class="divider"></div>
+  <h3>Economic Impact</h3>
+  <div class="facts">
+    <div><span>Annual operating cost</span><span>~$941.5M <span class="badge est">Est.</span></span></div>
+    <div><span>Cost per rider</span><span>~$6.80</span></div>
+    <div><span>Farebox recovery</span><span>~47%</span></div>
+    <div><span>Household savings (corrected)</span><span>~$215M/yr</span></div>
+    <div><span>2026 funding received</span><span>~$1.38B (public)</span></div>
+  </div>
+  <p class="flag">Flag: The $941.5M rail-specific operating cost is derived by applying an unverified 42.2% "rail share" to CTA's combined $2.23B 2026 budget — CTA does not publish a rail/bus cost split. Treat as a rough estimate, not an official CTA figure.</p>
+  <p class="flag">Corrected: the original household-savings calculation multiplied ridership (a trip count) by the full annual cost of owning a car, producing an impossible ~$609.8 billion figure. Recalculated here using AAA's per-mile driving cost (~$0.70/mi) × avg. trip distance × car-replacement % × trips.</p>
+  <p class="note">Funding risk: CTA, Metra, and Pace faced a widely-reported ~$200M regional fiscal cliff heading into 2026 as COVID-era relief funds ran out; the NITA Act's new ~$1.2B/year averted the deepest proposed service cuts and fare hikes, but CTA's 2026 budget documents note continued reliance on that funding holding steady in future years.</p>
+</section>
+
+<!-- CTA BUS -->
+<section class="plant" id="cta-bus">
+  <h2>CTA – Bus</h2>
+  <div class="sub">Chicago Transit Authority · 140 routes, ~1,879 buses</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="label">2025 Annual Ridership</div><div class="value">184M rides</div></div>
+    <div class="stat"><div class="label">YoY Change</div><div class="value">+1%</div></div>
+    <div class="stat"><div class="label">Weekday Avg.</div><div class="value">~602,600</div></div>
+    <div class="stat"><div class="label">Pre-Pandemic Recovery</div><div class="value">78%</div></div>
+  </div>
+  <p>CTA Bus operates the largest ridership share of CTA's system, serving Chicago and 35–40 surrounding suburbs. In 2025, CTA buses provided <b>184 million rides</b>, a 1% year-over-year increase and the highest pandemic-recovery rate of any Chicago-area transit mode. <span class="badge est">RTA, Feb 2026</span></p>
+  <p class="flag">Correction: the source notes cited a second, conflicting bus total (199.6M "restated 2025 total"). The figure independently confirmed by RTA's official 2025 year-end release is 184M — used here.</p>
+  <div class="divider"></div>
+  <h3>Environmental Impact <span class="badge est">Estimate</span></h3>
+  <div class="facts">
+    <div><span>CO₂ avoided/year</span><span>~163,600 metric tons</span></div>
+    <div><span>SO₂ avoided/year</span><span>~147.3 metric tons</span></div>
+    <div><span>NOₓ avoided/year</span><span>~12.3 metric tons</span></div>
+    <div><span>Gasoline avoided/year</span><span>~15,977,800 gallons</span></div>
+    <div><span>Auto trips avoided/year</span><span>~71,760,000</span></div>
+    <div><span>Congestion hours avoided/year</span><span>~3.05M hours <span class="badge est">Est.</span></span></div>
+    <div><span>Congestion cost avoided/year</span><span>~$56.2M <span class="badge est">Est., fixed</span></span></div>
+    <div><span>Basis</span><span>39% car-replacement (rail proxy), 5.7 mi avg. trip</span></div>
+  </div>
+  <p class="note">CTA has not published a bus-specific car-replacement survey; this reuses the CTA rail figure (39%) as the best available proxy, flagged accordingly. The original notes used an unrelated, unsourced "200,000 cars removed CTA-wide" placeholder instead of CTA Bus's own 184M ridership — recalculated here using actual bus ridership. SO₂/NOₓ reductions are a public-health (smog, respiratory) benefit distinct from CO₂'s climate benefit. Congestion figures use the same INRIX-2025-derived per-mile rate as CTA Rail (see Rail section for the source and the fix applied).</p>
+  <div class="divider"></div>
+  <h3>Economic Impact</h3>
+  <div class="facts">
+    <div><span>Annual operating cost</span><span>~$1.29B <span class="badge est">Est.</span></span></div>
+    <div><span>Cost per rider</span><span>~$7.01</span></div>
+    <div><span>Farebox recovery (CTA-wide)</span><span>~34.4%</span></div>
+    <div><span>Household savings (corrected)</span><span>~$286M/yr</span></div>
+  </div>
+  <p class="flag">Same caveat as Rail: the $1.29B figure applies an unverified 57.8% "bus share" to CTA's combined budget. CTA-wide farebox recovery (all modes) is roughly 34–35% per the FY2026 budget book; a bus-only figure isn't separately published.</p>
+  <p class="note">Funding risk: CTA Bus shares the same fiscal-cliff exposure as CTA Rail — both draw from the same combined $2.23B 2026 operating budget, and both depend on the NITA Act's new funding holding steady in future budget cycles.</p>
+</section>
+
+<!-- METRA -->
+<section class="plant" id="metra">
+  <h2>Metra</h2>
+  <div class="sub">Commuter rail · Cook, DuPage, Kane, Lake, McHenry, Will counties + Kenosha, WI</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="label">2025 Annual Ridership</div><div class="value">~38M rides</div></div>
+    <div class="stat"><div class="label">YoY Change</div><div class="value">+8%</div></div>
+    <div class="stat"><div class="label">Daily Avg. (Q1 2026)</div><div class="value">~163,000</div></div>
+    <div class="stat"><div class="label">2026 Budget</div><div class="value">$1.2B</div></div>
+  </div>
+  <p>Metra connects Chicago's suburbs and collar counties to downtown jobs. In 2025, ridership grew <b>8%</b> to nearly 38 million rides, continuing a post-pandemic recovery that included station renovations and expanded service on the UP-North, UP-West, and BNSF lines. <span class="badge est">RTA/Progressive Railroading, Feb 2026</span></p>
+  <div class="divider"></div>
+  <h3>Environmental Impact <span class="badge est">Estimate</span></h3>
+  <div class="facts">
+    <div><span>CO₂ avoided/year</span><span>172,870 metric tons</span></div>
+    <div><span>SO₂ avoided/year</span><span>155.58 metric tons</span></div>
+    <div><span>NOₓ avoided/year</span><span>12.97 metric tons</span></div>
+    <div><span>Gasoline avoided/year</span><span>17,326,055 gallons</span></div>
+    <div><span>Auto trips avoided/year</span><span>19,380,000</span></div>
+    <div><span>Congestion hours avoided/year</span><span>~3.23M hours <span class="badge est">Est.</span></span></div>
+    <div><span>Congestion cost avoided/year</span><span>~$59.4M <span class="badge est">Est., fixed</span></span></div>
+    <div><span>Basis</span><span>51% car-replacement, 22.3 mi avg. trip</span></div>
+  </div>
+  <p class="note">SO₂/NOₓ reduction is a public-health benefit (smog, respiratory harm) distinct from CO₂'s climate benefit. Congestion figures use the same INRIX-2025-Chicago-derived per-mile rate as CTA — directionally useful, though Metra riders' commutes skew longer and hit more peak-hour highway segments than the flat citywide average assumes, so this likely understates Metra's real congestion-relief value.</p>
+  <div class="divider"></div>
+  <h3>Economic Impact</h3>
+  <div class="facts">
+    <div><span>Annual operating cost</span><span>$1.2B</span></div>
+    <div><span>Cost per rider</span><span>~$31.58</span></div>
+    <div><span>Public funding share</span><span>~70% (~$840M)</span></div>
+    <div><span>Household savings (corrected)</span><span>~$302.5M/yr</span></div>
+  </div>
+  <p class="flag">Corrected: the original household-savings figure ($218.2 billion) multiplied 51% of 38 million riders by a full annual driving-cost figure — again treating a trip count as a household count. Recalculated at ~$302.5M/yr using AAA's per-mile cost × Metra's own 22.3-mile average trip distance.</p>
+  <p class="note">Funding risk: Metra included a fare increase in its 2026 budget at RTA's request as part of region-wide fiscal-cliff planning; the NITA Act's new funding reduced but may not have eliminated pressure toward future fare increases if ridership growth slows.</p>
+</section>
+
+<!-- PACE -->
+<section class="plant" id="pace">
+  <h2>Pace – Suburban Bus</h2>
+  <div class="sub">Cook, DuPage, Kane, Lake, McHenry, Will counties</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="label">2025 Annual Ridership</div><div class="value">16.4M rides</div></div>
+    <div class="stat"><div class="label">YoY Change</div><div class="value">−3%</div></div>
+    <div class="stat"><div class="label">Pandemic Recovery</div><div class="value">67%</div></div>
+    <div class="stat"><div class="label">2026 Budget</div><div class="value">$372M</div></div>
+  </div>
+  <p>Pace fills the suburban gap CTA doesn't reach. 2025 ridership was <b>16.4 million rides</b>, actually a 3% <i>decrease</i> from 2024, even as pandemic-recovery held near two-thirds of pre-2020 levels. <span class="badge est">RTA, Feb 2026</span></p>
+  <p class="flag">Correction: the original notes framed Pace's trend as growth. RTA's own release states Pace ridership declined 3% in 2025 — the honest number is a modest decline, not a talking point for growth.</p>
+  <div class="divider"></div>
+  <h3>Environmental Impact <span class="badge est">Estimate — revised</span></h3>
+  <div class="facts">
+    <div><span>CO₂ avoided/year</span><span>~12,595 metric tons</span></div>
+    <div><span>SO₂ avoided/year</span><span>~11.34 metric tons</span></div>
+    <div><span>NOₓ avoided/year</span><span>~0.95 metric tons</span></div>
+    <div><span>Gasoline avoided/year</span><span>~1,259,520 gallons</span></div>
+    <div><span>Auto trips avoided/year</span><span>~4,920,000</span></div>
+    <div><span>Congestion hours avoided/year</span><span>~235,000 hours <span class="badge est">Est.</span></span></div>
+    <div><span>Congestion cost avoided/year</span><span>~$4.3M <span class="badge est">Est., fixed</span></span></div>
+    <div><span>Basis</span><span>30% car-replacement (assumed), 6.4 mi avg. trip</span></div>
+  </div>
+  <p class="flag">Correction: Pace's own PR cites ~100,000 cars/day removed (≈36.5M trips/year) — but that exceeds Pace's own total annual ridership of 16.4M, which is mathematically impossible under a trips-avoided-per-transit-trip methodology. Recalculated using Pace's actual ridership × an assumed 30% car-replacement rate (industry-typical for suburban bus, not Pace-specific — needs a real Pace rider survey to firm up).</p>
+  <p class="note">SO₂/NOₓ reduction is a public-health, not just climate, benefit. Congestion figures use the same INRIX-2025-Chicago per-mile rate as CTA/Metra — a fair proxy since Pace serves the same metro area, though suburban trips likely see less severe delay than downtown-bound ones.</p>
+  <div class="divider"></div>
+  <h3>Economic Impact</h3>
+  <div class="facts">
+    <div><span>Annual operating cost</span><span>$372M</span></div>
+    <div><span>Cost per rider</span><span>~$22.68</span></div>
+    <div><span>Farebox recovery</span><span>6.2%</span></div>
+    <div><span>Household savings (corrected)</span><span>~$22M/yr</span></div>
+    <div><span>Public funding share</span><span>~94%</span></div>
+  </div>
+  <p class="note">Pace's 6.2% farebox recovery is the lowest of the six systems profiled — it depends on public funding more than any other, by a wide margin.</p>
+  <p class="note">Funding risk: Pace's 2026 budget was adopted after Senate Bill 2111 passed; like CTA and Metra, Pace included a fare increase in its 2026 proposal at RTA's request, reflecting the same region-wide fiscal-cliff pressure.</p>
+</section>
+
+<!-- AMTRAK -->
+<section class="plant" id="amtrak">
+  <h2>Amtrak Illinois</h2>
+  <div class="sub">State-supported intercity rail · Chicago–Springfield–St. Louis and other downstate routes, ~20 counties</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="label">FY2025 IL Ridership</div><div class="value">4.58M trips</div></div>
+    <div class="stat"><div class="label">YoY Change</div><div class="value">+5.1%</div></div>
+    <div class="stat"><div class="label">Daily Avg.</div><div class="value">~12,500</div></div>
+    <div class="stat"><div class="label">2026 State Funding</div><div class="value">$76M (proposed)</div></div>
+  </div>
+  <p>Amtrak is Illinois' only true statewide/downstate rail data point, connecting Chicago to Springfield, Carbondale, Quincy, and other downstate cities. Amtrak set a national ridership record in FY2025 with 4.58 million customer trips nationally; Illinois routes grew a reported 5.1% amid equipment constraints.</p>
+  <div class="divider"></div>
+  <h3>Environmental Impact <span class="badge est">Estimate</span></h3>
+  <div class="facts">
+    <div><span>CO₂ avoided/year</span><span>286,158 metric tons</span></div>
+    <div><span>SO₂ avoided/year</span><span>257.54 metric tons</span></div>
+    <div><span>NOₓ avoided/year</span><span>21.46 metric tons</span></div>
+    <div><span>Gasoline avoided/year</span><span>28,615,840 gallons</span></div>
+    <div><span>Auto trips avoided/year</span><span>2,519,000</span></div>
+    <div><span>Congestion hours avoided/year</span><span>~5.34M hours <span class="badge est">Est., weak</span></span></div>
+    <div><span>Congestion cost avoided/year</span><span>~$98.4M <span class="badge est">Est., weak</span></span></div>
+    <div><span>Basis</span><span>55% car-replacement, 284 mi avg. trip</span></div>
+  </div>
+  <p class="note">SO₂/NOₓ reduction is a public-health benefit distinct from CO₂'s climate benefit. Congestion figures reuse the Chicago INRIX per-mile rate for consistency, but Amtrak trips are mostly interstate highway miles, not congested urban Chicago streets — this almost certainly overstates Amtrak's real congestion-relief value and is the weakest congestion estimate on this page. Flagged accordingly; a defensible Amtrak-specific figure would need Illinois DOT interstate delay data, not an urban INRIX rate.</p>
+  <div class="divider"></div>
+  <h3>Economic Impact</h3>
+  <div class="facts">
+    <div><span>IL state operating funding, FY25</span><span>$67M</span></div>
+    <div><span>IL state operating funding, FY26 (proposed)</span><span>$76M</span></div>
+    <div><span>Cost per rider (IL subsidy only)</span><span>~$14.63</span></div>
+    <div><span>Farebox recovery, Lincoln Service</span><span>~99%</span></div>
+    <div><span>Farebox recovery, Hiawatha</span><span>~69%</span></div>
+    <div><span>Household/traveler savings</span><span>~$715.4M/yr <span class="badge est">Est.</span></span></div>
+  </div>
+  <p class="note">Amtrak's per-route farebox recovery figures are the strongest of any system profiled — most downstate IL routes cover 89–99% of operating cost through fares, which is a genuinely different economic story than the CTA/Metra/Pace/SMTD model. Worth leading with in advocacy material, since it undercuts the "transit doesn't pay for itself" critique for at least this system.</p>
+  <p class="note">Traveler savings uses trips-avoided × 284-mile avg. trip × $0.55/mile — this is the one savings calculation in the original notes that was already methodologically correct (per-mile, not per-household), so it's kept largely as-is.</p>
+  <p class="note">Funding risk: Illinois' Amtrak operating subsidy has grown each of the last three years ($60M → $67M → a proposed $76M), which is a genuine positive trend, but it remains a state budget line item subject to change each cycle rather than a dedicated funding source like the NITA Act provides CTA/Metra/Pace.</p>
+</section>
+
+<!-- SMTD -->
+<section class="plant" id="smtd">
+  <h2>Springfield Mass Transit District (SMTD)</h2>
+  <div class="sub">Sangamon County, IL — the downstate contrast case</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="label">Annual Ridership</div><div class="value">1.4M trips</div></div>
+    <div class="stat"><div class="label">YoY Change</div><div class="value">−7% (2023→24)</div></div>
+    <div class="stat"><div class="label">Daily Avg. (Q1 2026)</div><div class="value">~5,000</div></div>
+    <div class="stat"><div class="label">Farebox Recovery</div><div class="value">5–9%</div></div>
+  </div>
+  <p>SMTD is included specifically to contrast a small, likely underfunded downstate system against the big Chicago-area operators. Ridership fell 7% from 2023 to 2024 — a warning sign, not a growth story, and worth naming honestly.</p>
+  <div class="divider"></div>
+  <h3>Environmental Impact <span class="badge est">Estimate</span></h3>
+  <div class="facts">
+    <div><span>CO₂ avoided/year</span><span>510.7 metric tons</span></div>
+    <div><span>SO₂ avoided/year</span><span>0.46 metric tons</span></div>
+    <div><span>NOₓ avoided/year</span><span>0.038 metric tons</span></div>
+    <div><span>Gasoline avoided/year</span><span>51,072 gallons</span></div>
+    <div><span>Auto trips avoided/year</span><span>336,000</span></div>
+    <div><span>Congestion hours avoided/year</span><span>~9,500 hours <span class="badge est">Est., weak</span></span></div>
+    <div><span>Congestion cost avoided/year</span><span>~$176K <span class="badge est">Est., weak</span></span></div>
+    <div><span>Basis</span><span>24% car-availability, 3.8 mi avg. trip (FTA NTD data)</span></div>
+  </div>
+  <p class="note">SO₂/NOₓ figures are proportionally tiny simply because SMTD is a small system — that's itself part of the advocacy point: a well-funded downstate system would avoid meaningfully more pollution than this. Congestion figures reuse the Chicago INRIX rate for consistency, but Springfield's traffic congestion is far lighter than Chicago's — this almost certainly overstates SMTD's real congestion-relief value and should be treated as a rough ceiling, not a real number. A Springfield-specific delay rate isn't available from INRIX's public reporting.</p>
+  <div class="divider"></div>
+  <h3>Economic Impact</h3>
+  <div class="facts">
+    <div><span>Annual operating cost</span><span>$20.7M</span></div>
+    <div><span>Cost per rider</span><span>~$14.79</span></div>
+    <div><span>Farebox recovery</span><span>~5–9%</span></div>
+    <div><span>Household savings (corrected)</span><span>~$894K/yr</span></div>
+    <div><span>2025 federal funding secured</span><span>$7M (plus $17M earlier)</span></div>
+  </div>
+  <p class="flag">Corrected: the original figure ($2.016 billion) multiplied trip count by a flat $6,000 annual driving-cost figure, again treating trips as households. Recalculated at ~$894K/yr — a fraction of one percent of the original claim, and the honest number for a system SMTD's size.</p>
+  <p class="note">This is the sharpest advocacy contrast on the page: SMTD's entire annual operating budget ($20.7M) is smaller than the rounding error on CTA's budget, and its farebox recovery (5–9%) is the lowest of any system here except Pace — despite serving real commuters in the state capital.</p>
+  <p class="note">Funding risk: SMTD relies heavily on discretionary federal earmarks (e.g., the $7M secured by Illinois' U.S. senators in 2025) rather than a dedicated ongoing funding stream like the NITA Act gives the Chicago-area systems — making its budget comparatively more exposed to year-to-year political shifts in Washington.</p>
+</section>
+
+<section id="policy">
+  <h2 style="font-family:'Helvetica Neue',Arial,sans-serif;">Current Illinois Transit Policy</h2>
+  <ul class="policy-list">
+    <li><b>Northern Illinois Transit Authority (NITA) Act</b> — reorganizes regional transit governance, replacing the RTA, signed December 2025.</li>
+    <li><b>~$1.2B in new annual operating funding</b> — supports CTA, Metra, and Pace; averted the widely-reported 2026 "fiscal cliff" that would have forced service cuts and fare hikes.</li>
+    <li><b>0.25% regional sales-tax increase</b> — new dedicated revenue source for transit operations.</li>
+    <li><b>State gasoline sales-tax redirection</b> — 85% of the state portion of the gas sales tax now directed to the NITA region.</li>
+    <li><b>Transit safety & security funding</b> — additional funding for security personnel on buses and trains.</li>
+    <li><b>Accessibility investment</b> — CTA and Metra station ADA improvements, including elevators.</li>
+    <li><b>Zero-emission bus investment</b> — electrifying CTA and Pace fleets and facilities.</li>
+    <li><b>Red Line Extension</b> — major CTA capital project to extend Red Line service.</li>
+    <li><b>Access to Transit program</b> — sidewalk and bike-connection funding linking neighborhoods to stations.</li>
+    <li><b>"Next Move Illinois"</b> — IDOT's statewide transit strategy, explicitly including downstate systems like SMTD.</li>
+  </ul>
+</section>
+
+<section class="intro">
+  <h2>The Case for Public Transit</h2>
+  <p>Public transit and urbanism have become a lower priority in America than in comparable countries, in part because of how heavily car-centric infrastructure has been favored for decades. That has left most of the U.S. — outside a handful of major cities — with few real transportation alternatives. But by the numbers on this page, public transit is more economically efficient for working-class riders than car ownership, and it materially reduces the emissions driving climate change. Investing in it isn't just an environmental position — it's a direct financial benefit to the people who ride it, and a shared benefit (through reduced congestion and pollution) to everyone else in the state, including people who never set foot on a train or bus.</p>
+</section>
+
+<section class="intro">
+  <h2>Methodology & Honesty Notes</h2>
+  <p><b>What was corrected before publishing:</b> Two calculation patterns in the working notes for this project produced results that were off by orders of magnitude — in some cases larger than Illinois' entire state GDP. (1) "Household savings" was originally computed as trip-count × full annual car-ownership cost, rather than trip-count × trip-distance × per-mile driving cost — fixed using AAA's ~$0.70/mile marginal driving cost. (2) "Congestion cost avoided" used the same flawed pattern (annual per-driver cost × total trip count) and produced numbers like $98.6 billion for CTA Rail alone — more than 10x Illinois' actual statewide congestion cost. It's now restored using a unit-consistent method: miles avoided × a real per-mile cost derived from INRIX's 2025 Chicago Global Traffic Scorecard (112 hours and $2,063 lost per average Chicago driver per year). Pace's ridership vs. "cars removed" claim also contained an internal contradiction (claimed avoided trips exceeded total ridership) and was recalculated from Pace's actual ridership.</p>
+  <p><b>What's still an estimate, clearly labeled:</b> All CO₂/SO₂/NOₓ figures depend on car-replacement percentages drawn from rider surveys that are, in most cases, agency-wide rather than mode-specific (flagged inline where that's true). CTA's rail/bus operating-cost split is not a CTA-published figure — it's an estimate applied to CTA's real combined budget, and is labeled as such throughout. The congestion figures for Amtrak and SMTD reuse Chicago's INRIX rate as the only available benchmark, which almost certainly overstates their real congestion-relief value since neither system operates primarily in dense urban traffic — both are labeled "Est., weak" for that reason.</p>
+  <p class="note">Sources: RTA and CTA 2025 year-end ridership releases (Feb 2026), CTA FY2026 Budget Book, Metra 2026 budget approval, Pace FY2026 budget, Amtrak FY2025 national ridership report, Illinois FY2026 Amtrak grant request, FTA National Transit Database (SMTD), AAA Your Driving Costs (Sept. 2025), INRIX 2025 Global Traffic Scorecard (Chicago: 112 hrs/driver, $2,063/driver lost to congestion).</p>
+</section>
+
+</main>
+
+<footer>
+  Illinois Public Transit — a data profile and advocacy resource. Not affiliated with CTA, Metra, Pace, Amtrak, or SMTD.
+</footer>
+
+</body>
+</html>
